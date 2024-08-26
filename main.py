@@ -6,6 +6,9 @@ root = Tk()
 root.title("Bundestagsrede Abfrage")
 root.geometry("800x600")
 root.resizable(False, False)
+root.configure(bg='white')
+
+#-----------------------------------------------------------------------------------------------------------------------
 
 # --Funktionen--
 def on_enter(e):
@@ -15,27 +18,34 @@ def on_leave(e):
     e.widget['background'] = 'SystemButtonFace'
 
 def print_input(event):
-    print(entry.get())
+    print(entry_input.get())
+    entry_input.delete(0, END)
 
 def add_placeholder(event, text):
-    if entry.get() == '':
-        entry.insert(0, text)
-        entry.config(foreground='grey')
+    if entry_input.get() == '':
+        entry_input.insert(0, text)
+        entry_input.config(foreground='grey')
 
 def remove_placeholder(event, text):
-    if entry.get() == text:
-        entry.delete(0, END)
-        entry.config(foreground='black')
+    if entry_input.get() == text:
+        entry_input.delete(0, END)
+        entry_input.config(foreground='black')
 
-# --Quit Button--
-frm_quit_btn = ttk.Frame(root, padding=10)
-frm_quit_btn.pack(side=BOTTOM, anchor='w')
+#-----------------------------------------------------------------------------------------------------------------------
+
+# --Quit Button Frame--
+frm_quit_btn = Frame(root, bg='lightblue')
+frm_quit_btn.pack(side=BOTTOM, anchor='w', padx=10, pady=10)
 
 quit_button = Button(frm_quit_btn, text="Quit", command=root.destroy)
 quit_button.pack(side=LEFT)
 
+quit_button.configure(bg='white')
+
 quit_button.bind("<Enter>", on_enter)
 quit_button.bind("<Leave>", on_leave)
+
+#-----------------------------------------------------------------------------------------------------------------------
 
 # --Frage stellen Button--
 placeholder = 'Stelle eine Frage...'
@@ -43,34 +53,54 @@ placeholder = 'Stelle eine Frage...'
 frm_question = ttk.Frame(root)
 frm_question.pack(anchor=CENTER, side=BOTTOM)
 
+
+
 # --Variablen für Eingabefeld Größe--
-entry_width = 400
-entry_height = 50
-canvas_width = entry_width + 10
-canvas_height = entry_height + 10
+entry_width_input = 400
+entry_height_input = 50
+canvas_width_input = entry_width_input + 10
+canvas_height_input = entry_height_input + 10
 
 # --Canvas für abgerundete Ecken--
-canvas = Canvas(frm_question, width=canvas_width, height=canvas_height, bg='white', highlightthickness=0)
-canvas.pack()
+canvas_input = Canvas(frm_question, width=canvas_width_input, height=canvas_height_input, bg='white', highlightthickness=0)
+canvas_input.pack()
 
 # --Abgerundetes Rechteck zeichnen--
 radius = 15
-canvas.create_arc((0, 0, radius*2, radius*2), start=90, extent=90, fill='lightgrey', outline='lightgrey')
-canvas.create_arc((canvas_width-radius*2, 0, canvas_width, radius*2), start=0, extent=90, fill='lightgrey', outline='lightgrey')
-canvas.create_arc((0, canvas_height-radius*2, radius*2, canvas_height), start=180, extent=90, fill='lightgrey', outline='lightgrey')
-canvas.create_arc((canvas_width-radius*2, canvas_height-radius*2, canvas_width, canvas_height), start=270, extent=90, fill='lightgrey', outline='lightgrey')
-canvas.create_rectangle((radius, 0, canvas_width-radius, canvas_height), fill='lightgrey', outline='lightgrey')
-canvas.create_rectangle((0, radius, canvas_width, canvas_height-radius), fill='lightgrey', outline='lightgrey')
+canvas_input.create_arc((0, 0, radius*2, radius*2), start=90, extent=90, fill='lightgrey', outline='lightgrey')
+canvas_input.create_arc((canvas_width_input-radius*2, 0, canvas_width_input, radius*2), start=0, extent=90, fill='lightgrey', outline='lightgrey')
+canvas_input.create_arc((0, canvas_height_input-radius*2, radius*2, canvas_height_input), start=180, extent=90, fill='lightgrey', outline='lightgrey')
+canvas_input.create_arc((canvas_width_input-radius*2, canvas_height_input-radius*2, canvas_width_input, canvas_height_input), start=270, extent=90, fill='lightgrey', outline='lightgrey')
+canvas_input.create_rectangle((radius, 0, canvas_width_input-radius, canvas_height_input), fill='lightgrey', outline='lightgrey')
+canvas_input.create_rectangle((0, radius, canvas_width_input, canvas_height_input-radius), fill='lightgrey', outline='lightgrey')
 
 # --Entry Widget auf Canvas platzieren--
-entry = Entry(frm_question, foreground='grey', background='lightgrey', highlightthickness=0, borderwidth=0)
-entry.insert(0, placeholder)
+entry_input = Entry(frm_question, foreground='black', background='lightgrey', highlightthickness=0, borderwidth=0)
+entry_input.insert(0, placeholder)
 
-canvas.create_window(canvas_width//2, canvas_height//2, window=entry, width=entry_width, height=entry_height)
+canvas_input.create_window(canvas_width_input//2, canvas_height_input//2, window=entry_input, width=entry_width_input, height=entry_height_input)
 
 # --Bindings für Frage stellen Button--
-entry.bind("<FocusOut>", lambda event: add_placeholder(event, placeholder))
-entry.bind("<FocusIn>", lambda event: remove_placeholder(event, placeholder))
-entry.bind("<Return>", print_input)
+entry_input.bind("<FocusOut>", lambda event: add_placeholder(event, placeholder))
+entry_input.bind("<FocusIn>", lambda event: remove_placeholder(event, placeholder))
+entry_input.bind("<Return>", print_input)
+
+#-----------------------------------------------------------------------------------------------------------------------
+
+# --Output Fenster--
+frm_output = ttk.Frame(root)
+frm_output.pack(anchor=CENTER, side='top', pady=(100, 20))
+
+# --Variablen für Ausgabe Größe--
+canvas_width_output = 600
+canvas_height_output = 400
+
+canvas_output = Canvas(frm_output, width=canvas_width_output, height=canvas_height_output, bg='lightgrey', highlightthickness=5)
+canvas_output.pack()
+
+#-----------------------------------------------------------------------------------------------------------------------
+
+
+
 
 root.mainloop()
