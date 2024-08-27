@@ -1,5 +1,45 @@
+#--imports--
 from tkinter import *
 from tkinter import ttk
+from pgpt_python.client import PrivateGPTApi
+import PyPDF2
+import os
+
+#-----------------------------------------------------------------------------------------------------------------------
+
+#--pdf to txt--
+
+pdf = 'pdf/20182.pdf'
+
+
+def remove_after_period(s):
+    s = s.split('.')[0]
+    s = s.split('/')[1]
+    return s
+
+
+result = remove_after_period(pdf)
+
+
+def get_txt(input_pdf, output_dir):
+    with open(input_pdf, 'rb') as pdf_file:
+        reader = PyPDF2.PdfReader(pdf_file)
+        text = ''
+        for page in reader.pages:
+            text += page.extract_text() + '\n'  # Zeilenumbruch hinzufügen
+
+    # Text in eine .txt-Datei schreiben
+    output_txt = os.path.join(output_dir, f'{result}.txt')
+    with open(output_txt, 'w', encoding='utf-8') as txt_file:
+        txt_file.write(text)
+
+
+# Beispiel für die Verwendung
+output_dir = 'txt/'
+get_txt(f'pdf/{result}.pdf', output_dir)
+print(f"Text wurde in '{os.path.join(output_dir, f'{result}.txt')}' geschrieben.")
+
+#-----------------------------------------------------------------------------------------------------------------------
 
 # --Fenster Einstellungen--
 root = Tk()
@@ -99,8 +139,5 @@ canvas_output = Canvas(frm_output, width=canvas_width_output, height=canvas_heig
 canvas_output.pack()
 
 #-----------------------------------------------------------------------------------------------------------------------
-
-
-
 
 root.mainloop()

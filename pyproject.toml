@@ -8,6 +8,9 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 tk = "^0.1.0"
+pgpt-python = "^0.1.2"
+pypdf2 = "^3.0.1"
+reportlab = "^4.2.2"
 
 
 [build-system]
