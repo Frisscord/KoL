@@ -8,16 +8,26 @@ import re
 
 client = PrivateGPTApi(base_url="http://localhost:8001")
 
-print(client.health.health())
+def check_client_health():
+    if client.health.health().status == 'ok':
+        print("pGPT Ist startbereit! Du kannst jetzt Anfragen stellen.")
+    else:
+        print("pGPT ist nicht startbereit, bitte überprüfe den Server! Das Programm wurde beendet.")
+        os._exit(0)
+
+
+print(client.health.health().status)
+
+check_client_health()
 
 #-----------------------------------------------------------------------------------------------------------------------
 
-#--pdf to txt--
+#--pdf to txt | Kürzung des Textes--
 
 #--Variablen--
 
 pdf = 'pdf/20182.pdf'
-muster = r'\(A\)|\(B\)|\(C\)|\(D\)|Gesamtherstellung:.*?\-8333|\(*?\)'
+muster = r'\(A\)|\(B\)|\(C\)|\(D\)|Gesamtherstellung:.*?\-8333|\(.*?\)'
 output_dir = 'txt/'
 
 
@@ -58,7 +68,7 @@ root.configure(bg='white')
 
 #-----------------------------------------------------------------------------------------------------------------------
 
-# --Funktionen--
+# --Tk | Funktionen--
 def on_enter(e):
     e.widget['background'] = 'lightblue'
 
