@@ -4,12 +4,21 @@ from tkinter import ttk
 from pgpt_python.client import PrivateGPTApi
 import PyPDF2
 import os
+import re
+
+client = PrivateGPTApi(base_url="http://localhost:8001")
+
+print(client.health.health())
 
 #-----------------------------------------------------------------------------------------------------------------------
 
 #--pdf to txt--
 
+#--Variablen--
+
 pdf = 'pdf/20182.pdf'
+muster = r'\(A\)|\(B\)|\(C\)|\(D\)|Gesamtherstellung:.*?\-8333|\(*?\)'
+output_dir = 'txt/'
 
 
 def remove_after_period(s):
@@ -26,17 +35,16 @@ def get_txt(input_pdf, output_dir):
         reader = PyPDF2.PdfReader(pdf_file)
         text = ''
         for page in reader.pages:
-            text += page.extract_text() + '\n'  # Zeilenumbruch hinzufügen
+            text += page.extract_text() + '\n'
+            ergebnis = re.sub(muster, '', text, flags=re.DOTALL)
 
     # Text in eine .txt-Datei schreiben
     output_txt = os.path.join(output_dir, f'{result}.txt')
     with open(output_txt, 'w', encoding='utf-8') as txt_file:
-        txt_file.write(text)
+        txt_file.write(ergebnis)
 
-
-# Beispiel für die Verwendung
-output_dir = 'txt/'
 get_txt(f'pdf/{result}.pdf', output_dir)
+
 print(f"Text wurde in '{os.path.join(output_dir, f'{result}.txt')}' geschrieben.")
 
 #-----------------------------------------------------------------------------------------------------------------------
