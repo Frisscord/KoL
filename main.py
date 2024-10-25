@@ -9,12 +9,8 @@ import PyPDF2
 pdf = 'pdf/beispiel.pdf'
 output_dir = 'txt/'
 
-# -----------------------------------------------------------------------------------------------------------------------
-
 client = PrivateGPTApi(base_url="http://localhost:8001")
 muster = r'\(A\)|\(B\)|\(C\)|\(D\)|Gesamtherstellung:.*?\-8333|\(.*?\)'
-
-# -----------------------------------------------------------------------------------------------------------------------
 
 response_words = []
 
@@ -108,11 +104,7 @@ def remove_placeholder(event, text):
         entry_input.delete(0, END)
         entry_input.config(foreground='black')
 
-
-
-
 check_client_health()
-# -----------------------------------------------------------------------------------------------------------------------
 
 root = Tk()
 root.title("Bundestagsrede Abfrage")
@@ -177,7 +169,5 @@ frm_output.pack(anchor=CENTER, side='top', pady=(20, 20), padx=10)
 output_text = Text(frm_output, wrap='word', bg='lightgrey', fg='black', width=500, height=500, font=('Arial', 12))
 output_text.config(state='disabled')
 output_text.pack()
-
-# -----------------------------------------------------------------------------------------------------------------------
 
 root.mainloop()
