@@ -6,7 +6,7 @@ import os
 import re
 import PyPDF2
 
-pdf = 'pdf/20182.pdf'
+pdf = 'pdf/beispiel.pdf'
 output_dir = 'txt/'
 
 # -----------------------------------------------------------------------------------------------------------------------
@@ -18,10 +18,6 @@ muster = r'\(A\)|\(B\)|\(C\)|\(D\)|Gesamtherstellung:.*?\-8333|\(.*?\)'
 
 response_words = []
 
-with open(pdf, "rb") as f:
-    file_doc_id = client.ingestion.ingest_file(file=f).data[0].doc_id
-    print("Ingested file ID:", file_doc_id)
-
 def remove_after_period(s):
     s = s.split('.')[0]
     s = s.split('/')[1]
@@ -29,6 +25,26 @@ def remove_after_period(s):
 
 
 result = remove_after_period(pdf)
+
+def get_txt(input_pdf, output_dir):
+    with open(input_pdf, 'rb') as pdf_file:
+        reader = PyPDF2.PdfReader(pdf_file)
+        text = ''
+        for page in reader.pages:
+            text += page.extract_text() + '\n'
+            ergebnis = re.sub(muster, '', text, flags=re.DOTALL)
+
+    output_txt = os.path.join(output_dir, f'{result}.txt')
+    with open(output_txt, 'w', encoding='utf-8') as txt_file:
+        txt_file.write(ergebnis)
+
+
+get_txt(pdf, output_dir)
+print(f"Text wurde in '{os.path.join(output_dir, f'{result}.txt')}' geschrieben.")
+
+with open(f"txt/{result}.txt", "rb") as f:
+    file_doc_id = client.ingestion.ingest_file(file=f).data[0].doc_id
+    print("Ingested file ID:", file_doc_id)
 
 def check_client_health():
     if client.health.health().status == 'ok':
@@ -74,12 +90,7 @@ def send_input(entry):
     print(f" # Source: {result.sources[0].document.doc_metadata['file_name']}")
     result = result.message.content
 
-    # for chunk in client.contextual_completions.chat_completion_stream(
-    #     messages=[{"role": "user", "content": entry}],
-    #     use_context=True,
-    #     context_filter={"docs_ids": [file_doc_id]}):
-    #     print(chunk.choices[0].delta.content.split())
-    #     response_words.extend(chunk.choices[0].delta.content.split())
+
 
     entry_input.config(state='normal')
     request_in_progress.set(False)
@@ -98,21 +109,7 @@ def remove_placeholder(event, text):
         entry_input.config(foreground='black')
 
 
-def get_txt(input_pdf, output_dir):
-    with open(input_pdf, 'rb') as pdf_file:
-        reader = PyPDF2.PdfReader(pdf_file)
-        text = ''
-        for page in reader.pages:
-            text += page.extract_text() + '\n'
-            ergebnis = re.sub(muster, '', text, flags=re.DOTALL)
 
-    output_txt = os.path.join(output_dir, f'{result}.txt')
-    with open(output_txt, 'w', encoding='utf-8') as txt_file:
-        txt_file.write(ergebnis)
-
-
-get_txt(f'pdf/{result}.pdf', output_dir)
-print(f"Text wurde in '{os.path.join(output_dir, f'{result}.txt')}' geschrieben.")
 
 check_client_health()
 # -----------------------------------------------------------------------------------------------------------------------
