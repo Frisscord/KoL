@@ -16,7 +16,19 @@ muster = r'\(A\)|\(B\)|\(C\)|\(D\)|Gesamtherstellung:.*?\-8333|\(.*?\)'
 
 # -----------------------------------------------------------------------------------------------------------------------
 
-woerter = []
+response_words = []
+
+with open(pdf, "rb") as f:
+    file_doc_id = client.ingestion.ingest_file(file=f).data[0].doc_id
+    print("Ingested file ID:", file_doc_id)
+
+def remove_after_period(s):
+    s = s.split('.')[0]
+    s = s.split('/')[1]
+    return s
+
+
+result = remove_after_period(pdf)
 
 def check_client_health():
     if client.health.health().status == 'ok':
@@ -25,18 +37,22 @@ def check_client_health():
         print("pGPT ist nicht startbereit, bitte überprüfe den Server! Das Programm wurde beendet.")
         os._exit(0)
 
+
 def insert_text(text):
     output_text.config(state='normal')
-    output_text.insert(END, "AI:    " + text)
+    output_text.tag_configure("padded", lmargin1=10, lmargin2=10, rmargin=10)
+    output_text.insert(END, "AI:    " + text, "padded")
     output_text.insert(END, '\n' + "--------------------------------------------------" + '\n')
     output_text.config(state='disabled')
-    woerter.clear()
+    response_words.clear()
 
 def on_enter(e):
     e.widget['background'] = 'lightblue'
 
+
 def on_leave(e):
     e.widget['background'] = 'SystemButtonFace'
+
 
 def print_input(event):
     if not request_in_progress.get():
@@ -46,29 +62,41 @@ def print_input(event):
         threading.Thread(target=send_input, args=(entry,)).start()
         entry_input.delete(0, END)
 
+
 def send_input(entry):
-    for i in client.contextual_completions.prompt_completion_stream(prompt=entry):
-        woerter.append(i.choices[0].delta.content)
+    result = client.contextual_completions.prompt_completion(
+        prompt=entry,
+        use_context=True,
+        context_filter={"docs_ids": [file_doc_id]},
+        include_sources=True,
+    ).choices[0]
+    print(result.message.content)
+    print(f" # Source: {result.sources[0].document.doc_metadata['file_name']}")
+    result = result.message.content
+
+    # for chunk in client.contextual_completions.chat_completion_stream(
+    #     messages=[{"role": "user", "content": entry}],
+    #     use_context=True,
+    #     context_filter={"docs_ids": [file_doc_id]}):
+    #     print(chunk.choices[0].delta.content.split())
+    #     response_words.extend(chunk.choices[0].delta.content.split())
+
     entry_input.config(state='normal')
     request_in_progress.set(False)
-    insert_text(' '.join(woerter))
+    insert_text(result)
+
 
 def add_placeholder(event, text):
     if entry_input.get() == '':
         entry_input.insert(0, text)
         entry_input.config(foreground='grey')
 
+
 def remove_placeholder(event, text):
     if entry_input.get() == text:
         entry_input.delete(0, END)
         entry_input.config(foreground='black')
 
-def remove_after_period(s):
-    s = s.split('.')[0]
-    s = s.split('/')[1]
-    return s
-
-result = remove_after_period(pdf)
 
 def get_txt(input_pdf, output_dir):
     with open(input_pdf, 'rb') as pdf_file:
@@ -82,11 +110,11 @@ def get_txt(input_pdf, output_dir):
     with open(output_txt, 'w', encoding='utf-8') as txt_file:
         txt_file.write(ergebnis)
 
+
 get_txt(f'pdf/{result}.pdf', output_dir)
 print(f"Text wurde in '{os.path.join(output_dir, f'{result}.txt')}' geschrieben.")
 
 check_client_health()
-
 # -----------------------------------------------------------------------------------------------------------------------
 
 root = Tk()
