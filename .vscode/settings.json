@@ -1,0 +1,16 @@
+{
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.terminal.activateEnvironment": true,
+    "css.lint.unknownAtRules": "ignore",
+    "files.exclude": {
+        "**/.git": true,
+        "**/*.pyc": {"when": "$(basename).py"},
+        "**/__pycache__": true
+    },
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    }
+}

@@ -1,17 +1,19 @@
 [tool.poetry]
-name = "kol-project"
+name = "dip-api-example"
 version = "0.1.0"
-description = "KoL_Project | Gerda Taro Gymnasium | Klasse 10 | Friedrich Grabner | 2024/2025"
-authors = ["Fritz <friedrichgrabner09@gmail.com>"]
-readme = "README.md"
+description = ""
+authors = ["Your Name <you@example.com>"]
+exclude = ["**"]
+classifiers = ["Private :: Do Not Upload"]
 
 [tool.poetry.dependencies]
-python = "^3.12"
-tk = "^0.1.0"
-pgpt-python = "^0.1.2"
-pypdf2 = "^3.0.1"
-reportlab = "^4.2.2"
+python = "^3.10"
+requests = "2.32.3"
 
+
+[tool.poetry.group.dev.dependencies]
+black = "24.10.0"
+isort = "5.13.2"
 
 [build-system]
 requires = ["poetry-core"]

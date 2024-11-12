@@ -1,3 +1,0 @@
-Beispiel PDF
-Dies ist ein Beispieltext in einer PDF-Datei. Das Dokument wurde mit Python und der FPDF-Bibliothek erstellt. Es dient
-als Beispiel für den Download von PDF-Dateien mit einfachem Text.
