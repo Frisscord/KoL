@@ -1,4 +1,5 @@
 from dip_client import DIPClient
+from ui import UI
 import os
 import glob
 
@@ -34,6 +35,8 @@ if __name__ == "__main__":
         print(f"Datum: {protokoll['datum']}")
         print(f"PDF-URL: {protokoll['fundstelle']['pdf_url']}\n")
         print("-" * 50)
+    else:
+        exit()
 
     fraktion_name = input("Fraktion eingeben (optional): ")
     redner = input("Redner eingeben (optional): ")
@@ -47,3 +50,6 @@ if __name__ == "__main__":
                 file.write(f"Redner: {rede['redner']} ({rede['fraktion']})\n")
                 file.write(f"Inhalt: {rede['inhalt']}\n\n")
         print("Reden wurden gespeichert.")
+
+    client = UI()
+
