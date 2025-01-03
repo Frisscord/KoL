@@ -1,7 +1,10 @@
 from dip_client import DIPClient
-from ui import UI
+from ai_selection import SelectionWindow
 import os
 import glob
+from dotenv import load_dotenv
+
+load_dotenv()
 
 directory = "output_reden"
 
@@ -19,7 +22,7 @@ def is_non_zero_file():
     return os.stat("output_reden/reden.txt").st_size == 0
 
 if __name__ == "__main__":
-    api_key = "I9FKdCn.hbfefNWCY336dL6x62vfwNKpoN2RZ1gp21"
+    api_key = os.environ.get("DIP_API_KEY")
     client = DIPClient(api_key)
 
     document_number = input("Dokumentnummer eingeben: ")
@@ -53,8 +56,8 @@ if __name__ == "__main__":
                 file.write(f"Redner: {rede['redner']} ({rede['fraktion']})\n")
                 file.write(f"Inhalt: {rede['inhalt']}\n\n")
         if is_non_zero_file():
-            print_colored_text("Reden keine gefunden. Bitte Überprüfen Sie die Eingabe.", 31)
+            print_colored_text("Keine Reden gefunden. Bitte Überprüfen Sie die Eingabe.", 31)
         else:
             print_colored_text("Reden wurden erfolgreich gespeichert.", 32)
-            client = UI()
+            selection_window = SelectionWindow()
 

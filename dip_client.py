@@ -8,10 +8,6 @@ class DIPClient:
         self.api_key = api_key
 
     def lade_protokoll(self, dokumentnummer, redner_filter=None, fraktion_filter=None):
-        """
-        Lädt das Plenarprotokoll einschließlich der Reden basierend auf der Dokumentnummer.
-        Optional können Redner und Fraktion gefiltert werden.
-        """
         # Abrufen der Metadaten und der XML-URL
         url = f"{self.BASE_URL}/plenarprotokoll"
         params = {

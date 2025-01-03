@@ -1,22 +1,58 @@
 import tkinter as tk
 from tkinter import ttk, END
+
 import threading
 from pgpt_python.client import PrivateGPTApi
 import httpx
 
+from dotenv import load_dotenv
+import requests
+import json
+import os
+
+load_dotenv()
+
+
 class UI:
-    def __init__(self):
+    def __init__(self, type):
         self.client = PrivateGPTApi(base_url="http://localhost:8001")
 
-        if self.client.health.health().status == 'ok':
-            print("pGPT Ist startbereit! Du kannst jetzt Anfragen stellen.")
-        else:
-            print("pGPT ist nicht startbereit, bitte überprüfe den Server! Das Programm wurde beendet.")
-            exit()
+        self.type = type
 
-        with open(f"output_reden/reden.txt", "rb") as f:
-            self.file_doc_id = self.client.ingestion.ingest_file(file=f).data[0].doc_id
-            print("Ingested file ID:", self.file_doc_id)
+        if self.type == "pgpt":
+            if self.client.health.health().status == 'ok':
+                with open(f"output_reden/reden.txt", "rb") as f:
+                    self.file_doc_id = self.client.ingestion.ingest_file(file=f).data[0].doc_id
+                    print("Ingested file ID:", self.file_doc_id)
+
+                print("pGPT Ist startbereit! Du kannst jetzt Anfragen stellen.")
+            else:
+                print("pGPT ist nicht startbereit, bitte überprüfe den Server! Das Programm wurde beendet.")
+                exit()
+
+        elif  self.type == "groq":
+            self.tokens = input("Tokens eingeben: ")
+            try:
+                self.tokens = int(self.tokens)
+            except ValueError:
+                print("Bitte geben Sie eine gültige Zahl ein.")
+                exit()
+
+            if not self.tokens:
+                self.tokens = 2000
+
+            print("Groq ist startbereit! Du kannst jetzt Anfragen stellen.")
+
+            self.API_KEY = os.environ.get("GROQ_API_KEY")
+            self.ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions'
+
+            self.headers = {
+                'Authorization': f'Bearer {self.API_KEY}',
+                'Content-Type': 'application/json'
+            }
+
+            with open(f"output_reden/reden.txt", "rb") as f:
+                self.dokument_inhalt = f.read()
 
         root = tk.Tk()
         root.title("Bundestagsrede Abfrage")
@@ -32,7 +68,6 @@ class UI:
 
         quit_button.configure(bg='white')
 
-        # Bind hover events
         quit_button.bind("<Enter>", self.on_enter)
         quit_button.bind("<Leave>", self.on_leave)
 
@@ -112,18 +147,40 @@ class UI:
         threading.Thread(target=self.send_request, args=(input_text, entry_input,)).start()
 
     def send_request(self, entry, entry_input):
-        try:
-            result = self.client.contextual_completions.prompt_completion(
-                prompt=entry,
-                use_context=True,
-                context_filter={"docs_ids": [self.file_doc_id]},
-                include_sources=True
-            ).choices[0]
-            entry_input.config(state='normal')
-            self.show_text(result.message.content)
-        except httpx.ReadTimeout:
-            print("The request timed out. Please try again later.")
-            entry_input.config(state='normal')
+        if self.type == "pgpt":
+            try:
+                result = self.client.contextual_completions.prompt_completion(
+                    prompt=entry,
+                    use_context=True,
+                    context_filter={"docs_ids": [self.file_doc_id]},
+                    include_sources=True
+                ).choices[0]
+                entry_input.config(state='normal')
+                self.show_text(result.message.content)
+            except httpx.ReadTimeout:
+                print("The request timed out. Please try again later.")
+                entry_input.config(state='normal')
+
+        elif self.type == "groq":
+            data = {
+                'model': 'mixtral-8x7b-32768',
+                'messages': [
+                    {'role': 'system', 'content': 'You are a helpful assistant.'},
+                    {'role': 'user',
+                     'content': f'Beantworte mir Folgende Frage: {entry} und greife dabei auf folgendes Dokument zurück: {self.dokument_inhalt}'}
+                ],
+                'max_tokens': self.tokens
+            }
+
+            response = requests.post(self.ENDPOINT, headers=self.headers, data=json.dumps(data))
+
+            if response.status_code == 200:
+                reply = response.json()
+                content_value = reply["choices"][0]["message"]["content"]
+                entry_input.config(state='normal')
+                self.show_text(content_value)
+            else:
+                print(f'Fehler: {response.status_code}, {response.text}')
 
     def show_text(self, text):
         self.output_text.config(state='normal')
