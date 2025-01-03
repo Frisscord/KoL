@@ -17,7 +17,7 @@ for file in files:
         os.remove(file)
         print_colored_text(f"Deleted: {file}", 31)
     except Exception as e:
-        print(f"Error deleting {file}: {e}")
+        print_colored_text(f"Error deleting {file}: {e}", 31)
 def is_non_zero_file():
     return os.stat("output_reden/reden.txt").st_size == 0
 
@@ -25,8 +25,8 @@ if __name__ == "__main__":
     api_key = os.environ.get("DIP_API_KEY")
     client = DIPClient(api_key)
 
-    document_number = input("Dokumentnummer eingeben: ")
-    print("-" * 50)
+    document_number = input("\033[33mDokumentnummer eingeben: \033[0m")
+    print_colored_text("-" * 50, 34)
 
     fraktion_name = ""
     redner = ""
@@ -44,8 +44,8 @@ if __name__ == "__main__":
     else:
         exit()
 
-    fraktion_name = input("Fraktion eingeben (optional): ")
-    redner = input("Redner eingeben (optional): ")
+    fraktion_name = input("\033[33mFraktion eingeben (optional): \033[0m")
+    redner = input("\033[33mRedner eingeben (optional): \033[0m")
 
     # Lade Plenarprotokoll und Reden
     protokoll = client.lade_protokoll(document_number, redner_filter=redner, fraktion_filter=fraktion_name)

@@ -12,36 +12,34 @@ import os
 
 load_dotenv()
 
-
 class UI:
     def __init__(self, type):
         self.client = PrivateGPTApi(base_url="http://localhost:8001")
-
         self.type = type
 
         if self.type == "pgpt":
             if self.client.health.health().status == 'ok':
                 with open(f"output_reden/reden.txt", "rb") as f:
                     self.file_doc_id = self.client.ingestion.ingest_file(file=f).data[0].doc_id
-                    print("Ingested file ID:", self.file_doc_id)
+                    self.print_colored_text(f"Ingested file ID: {self.file_doc_id}", fg=34)
 
-                print("pGPT Ist startbereit! Du kannst jetzt Anfragen stellen.")
+                self.print_colored_text("pGPT Ist startbereit! Du kannst jetzt Anfragen stellen.", 32)
             else:
-                print("pGPT ist nicht startbereit, bitte überprüfe den Server! Das Programm wurde beendet.")
+                self.print_colored_text("pGPT ist nicht startbereit, bitte überprüfe den Server! Das Programm wurde beendet.", 31)
                 exit()
 
         elif  self.type == "groq":
-            self.tokens = input("Tokens eingeben: ")
+            self.tokens = input("\033[33mTokens eingeben: \033[0m")
             try:
                 self.tokens = int(self.tokens)
             except ValueError:
-                print("Bitte geben Sie eine gültige Zahl ein.")
+                self.print_colored_text("Bitte geben Sie eine gültige Zahl ein.", 31)
                 exit()
 
             if not self.tokens:
                 self.tokens = 2000
 
-            print("Groq ist startbereit! Du kannst jetzt Anfragen stellen.")
+            self.print_colored_text("Groq ist startbereit! Du kannst jetzt Anfragen stellen.", 32)
 
             self.API_KEY = os.environ.get("GROQ_API_KEY")
             self.ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions'
@@ -158,7 +156,7 @@ class UI:
                 entry_input.config(state='normal')
                 self.show_text(result.message.content)
             except httpx.ReadTimeout:
-                print("The request timed out. Please try again later.")
+                self.print_colored_text("The request timed out. Please try again later.", 31)
                 entry_input.config(state='normal')
 
         elif self.type == "groq":
@@ -180,7 +178,7 @@ class UI:
                 entry_input.config(state='normal')
                 self.show_text(content_value)
             else:
-                print(f'Fehler: {response.status_code}, {response.text}')
+                self.print_colored_text(f'Fehler: {response.status_code}, {response.text}', 31)
 
     def show_text(self, text):
         self.output_text.config(state='normal')
@@ -188,6 +186,9 @@ class UI:
         self.output_text.insert(END, "AI:    " + text, "padded")
         self.output_text.insert(END, '\n' + "--------------------------------------------------" + '\n')
         self.output_text.config(state='disabled')
+
+    def print_colored_text(self, text, fg):
+        print(f'\x1b[{fg}m{text}\x1b[0m')
 
 if __name__ == "__main__":
     UI()
