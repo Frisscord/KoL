@@ -112,7 +112,7 @@ class UI:
 
         self.entry_input.bind("<FocusOut>", lambda event: self.add_placeholder(event, placeholder, self.entry_input))
         self.entry_input.bind("<FocusIn>", lambda event: self.remove_placeholder(event, placeholder, self.entry_input))
-        self.entry_input.bind('<Return>', lambda event: self.print_input(self.entry_input))
+        self.entry_input.bind('<Return>', lambda event: self.get_input(self.entry_input))
 
         frm_output = ttk.Frame(root)
         frm_output.pack(anchor=tk.CENTER, side='top', pady=(20, 20), padx=10)
@@ -140,7 +140,7 @@ class UI:
     def on_leave(self, event):
         event.widget['background'] = 'white'
 
-    def print_input(self, entry_input):
+    def get_input(self, entry_input):
         input_text = entry_input.get()
         self.entry_input.config(state='disabled')
         self.entry_input.delete(0, tk.END)
@@ -224,6 +224,3 @@ class UI:
 
         except Exception as e:
             self.print_colored_text(f"Fehler beim Schreiben in die Log-Datei: {e}", 31)
-
-if __name__ == "__main__":
-    UI()

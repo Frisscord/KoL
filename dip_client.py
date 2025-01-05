@@ -33,15 +33,15 @@ class DIPClient:
             return None
 
         # XML-Inhalt laden und Reden extrahieren
-        root = self._get_xml_content(xml_url)
+        root = self.get_xml_content(xml_url)
         if not root:
             return None
 
-        reden = self._extract_reden(root, redner_filter, fraktion_filter)
+        reden = self.extract_reden(root, redner_filter, fraktion_filter)
         plenarprotokoll["reden"] = reden
         return plenarprotokoll
 
-    def _get_xml_content(self, xml_url):
+    def get_xml_content(self, xml_url):
         """
         Lädt die XML-Datei von der angegebenen URL und gibt den geparsten Inhalt zurück.
         """
@@ -57,7 +57,7 @@ class DIPClient:
             print(f"Fehler beim Parsen der XML-Datei: {e}")
             return None
 
-    def _extract_reden(self, root, redner_filter=None, fraktion_filter=None):
+    def extract_reden(self, root, redner_filter=None, fraktion_filter=None):
         """
         Extrahiert alle Reden aus dem XML-Dokument und filtert nach Redner und Fraktion.
         """

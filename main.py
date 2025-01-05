@@ -17,12 +17,12 @@ files = glob.glob(os.path.join(dictionary, "*"))
 for file in files:
     try:
         os.remove(file)
-        print_colored_text(f"Deleted: {file}", 31)
+        print_colored_text(f"Gelöscht: {file}", 31)
     except Exception as e:
-        print_colored_text(f"Error deleting {file}: {e}", 31)
+        print_colored_text(f"Fehler beim Löschen von: {file}: {e}", 31)
 
 
-def is_non_zero_file():
+def is_file_zero():
     return os.stat("output_reden/reden.txt").st_size == 0
 
 
@@ -60,7 +60,7 @@ if __name__ == "__main__":
             for rede in protokoll["reden"]:
                 file.write(f"Redner: {rede['redner']} ({rede['fraktion']})\n")
                 file.write(f"Inhalt: {rede['inhalt']}\n\n")
-        if is_non_zero_file():
+        if is_file_zero():
             print_colored_text("Keine Reden gefunden. Bitte Überprüfen Sie die Eingabe.", 31)
         else:
             print_colored_text("Reden wurden erfolgreich gespeichert.", 32)
