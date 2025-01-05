@@ -6,20 +6,25 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-directory = "output_reden"
+dictionary = "output_reden"
+
 
 def print_colored_text(text, fg):
     print(f'\x1b[{fg}m{text}\x1b[0m')
 
-files = glob.glob(os.path.join(directory, "*"))
+
+files = glob.glob(os.path.join(dictionary, "*"))
 for file in files:
     try:
         os.remove(file)
         print_colored_text(f"Deleted: {file}", 31)
     except Exception as e:
         print_colored_text(f"Error deleting {file}: {e}", 31)
+
+
 def is_non_zero_file():
     return os.stat("output_reden/reden.txt").st_size == 0
+
 
 if __name__ == "__main__":
     api_key = os.environ.get("DIP_API_KEY")

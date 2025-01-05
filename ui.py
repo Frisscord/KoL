@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import requests
 import json
 import os
+from timer import Timer
 
 load_dotenv()
 
@@ -16,6 +17,7 @@ class UI:
     def __init__(self, type):
         self.client = PrivateGPTApi(base_url="http://localhost:8001")
         self.type = type
+        self.timer = Timer()
 
         if self.type == "pgpt":
             if self.client.health.health().status == 'ok':
@@ -142,6 +144,7 @@ class UI:
         input_text = entry_input.get()
         self.entry_input.config(state='disabled')
         self.entry_input.delete(0, tk.END)
+        self.timer.start()
         threading.Thread(target=self.send_request, args=(input_text, entry_input,)).start()
 
     def send_request(self, entry, entry_input):
@@ -154,6 +157,10 @@ class UI:
                     include_sources=True
                 ).choices[0]
                 entry_input.config(state='normal')
+
+                self.timer.stop()
+                self.log(entry, result.message.content, self.timer.calculate_time(), "pGPT")
+
                 self.show_text(result.message.content)
             except httpx.ReadTimeout:
                 self.print_colored_text("The request timed out. Please try again later.", 31)
@@ -175,6 +182,8 @@ class UI:
             if response.status_code == 200:
                 reply = response.json()
                 content_value = reply["choices"][0]["message"]["content"]
+                self.timer.stop()
+                self.log(entry, content_value, self.timer.calculate_time(), "Groq")
                 entry_input.config(state='normal')
                 self.show_text(content_value)
             else:
@@ -189,6 +198,32 @@ class UI:
 
     def print_colored_text(self, text, fg):
         print(f'\x1b[{fg}m{text}\x1b[0m')
+
+    def log(self, question, answer, time, ai_type):
+        log_entry = {
+            "Frage": question,
+            "Ausgabe": answer,
+            "Zeit": time,
+            "KI": ai_type
+        }
+
+        try:
+            if os.path.exists("log.json"):
+                with open("log.json", "r", encoding="utf-8") as log_file:
+                    logs = json.load(log_file)
+            else:
+                logs = {}
+
+            next_question_number = len(logs) + 1
+            logs[f"Frage{next_question_number}"] = {
+                "Details": log_entry
+            }
+
+            with open("log.json", "w", encoding="utf-8") as log_file:
+                json.dump(logs, log_file, ensure_ascii=False, indent=4)
+
+        except Exception as e:
+            self.print_colored_text(f"Fehler beim Schreiben in die Log-Datei: {e}", 31)
 
 if __name__ == "__main__":
     UI()
