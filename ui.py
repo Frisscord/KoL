@@ -15,6 +15,7 @@ load_dotenv()
 
 class UI:
     def __init__(self, type):
+
         self.client = PrivateGPTApi(base_url="http://localhost:8001")
         self.type = type
         self.timer = Timer()
@@ -55,7 +56,7 @@ class UI:
                 self.dokument_inhalt = f.read()
 
         root = tk.Tk()
-        root.title("Bundestagsrede Abfrage")
+        root.title("KoL")
         root.geometry("800x600")
         root.resizable(False, False)
         root.configure(bg='white')
@@ -163,14 +164,14 @@ class UI:
 
                 self.show_text(result.message.content)
             except httpx.ReadTimeout:
-                self.print_colored_text("The request timed out. Please try again later.", 31)
+                self.print_colored_text("Timeout. Bitte versuche es später erneut.", 31)
                 entry_input.config(state='normal')
 
         elif self.type == "groq":
             data = {
                 'model': 'mixtral-8x7b-32768',
                 'messages': [
-                    {'role': 'system', 'content': 'You are a helpful assistant.'},
+                    {'role': 'system', 'content': 'Du bist eine Person die über Politik Reden informiert, greife auf den Text am Ende zu außer dir wird es anderes gesagt'},
                     {'role': 'user',
                      'content': f'Beantworte mir Folgende Frage: {entry} und greife dabei auf folgendes Dokument zurück: {self.dokument_inhalt}'}
                 ],
@@ -187,7 +188,9 @@ class UI:
                 entry_input.config(state='normal')
                 self.show_text(content_value)
             else:
+                self.timer.stop()
                 self.print_colored_text(f'Fehler: {response.status_code}, {response.text}', 31)
+                entry_input.config(state='normal')
 
     def show_text(self, text):
         self.output_text.config(state='normal')
