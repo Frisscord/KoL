@@ -1,0 +1,4 @@
+python-dotenv~=1.0.1
+requests~=2.32.3
+pgpt_python~=0.1.2
+httpx~=1.0.0b0
