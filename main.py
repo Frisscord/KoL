@@ -49,8 +49,8 @@ if __name__ == "__main__":
     else:
         exit()
 
-    fraktion_name = input("\033[33mFraktion eingeben (optional): \033[0m")
-    redner = input("\033[33mRedner eingeben (optional): \033[0m")
+    fraktion_name = input("\033[33mFraktion eingeben: \033[0m")
+    redner = input("\033[33mRedner eingeben: \033[0m")
 
     # Lade Plenarprotokoll und Reden
     protokoll = client.lade_protokoll(document_number, redner_filter=redner, fraktion_filter=fraktion_name)

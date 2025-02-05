@@ -15,21 +15,26 @@ load_dotenv()
 
 class UI:
     def __init__(self, type):
-
-        self.client = PrivateGPTApi(base_url="http://localhost:8001")
         self.type = type
         self.timer = Timer()
 
         if self.type == "pgpt":
-            if self.client.health.health().status == 'ok':
-                with open(f"output_reden/reden.txt", "rb") as f:
-                    self.file_doc_id = self.client.ingestion.ingest_file(file=f).data[0].doc_id
-                    self.print_colored_text(f"Ingested file ID: {self.file_doc_id}", fg=34)
+            try:
+                self.client = PrivateGPTApi(base_url="http://localhost:8001")
+                if self.client.health.health().status == 'ok':
+                    with open(f"output_reden/reden.txt", "rb") as f:
+                        self.file_doc_id = self.client.ingestion.ingest_file(file=f).data[0].doc_id
+                        self.print_colored_text(f"Ingested file ID: {self.file_doc_id}", fg=34)
 
-                self.print_colored_text("pGPT Ist startbereit! Du kannst jetzt Anfragen stellen.", 32)
-            else:
-                self.print_colored_text("pGPT ist nicht startbereit, bitte überprüfe den Server! Das Programm wurde beendet.", 31)
+                    self.print_colored_text("pGPT Ist startbereit! Du kannst jetzt Anfragen stellen.", 32)
+                else:
+                    self.print_colored_text(
+                        "pGPT ist nicht startbereit, bitte überprüfe den Server! Das Programm wurde beendet.", 31)
+                    exit()
+            except Exception as e:
+                self.print_colored_text(f"Ein Fehler ist aufgetreten: {e}", 31)
                 exit()
+
 
         elif  self.type == "groq":
             self.tokens = input("\033[33mTokens eingeben: \033[0m")

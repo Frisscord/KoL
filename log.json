@@ -718,5 +718,21 @@
             "Zeit": 5.176663637161255,
             "KI": "pGPT"
         }
+    },
+    "Frage91": {
+        "Details": {
+            "Frage": "Fasse das Dokument von Beatrix von Storch kurz zusammen",
+            "Ausgabe": "Beatrix von Storch, eine Rednerin der Partei AfD, hielt eine Rede im Bundestag und kritisierte den Verfassungsschutz in seiner aktuellen Form. Sie behauptet, dass der Verfassungsschutz nicht die Demokratie schützt, sondern eine Gefahr für sie darstellt. Laut von Storch wird diese Gefahr durch zwei Personen verkörpert: den ehemaligen Verfassungsschutzchef Haldenwang und den Thüringer VS-Präsidenten Kramer. Sie wirft Haldenwang vor, den Verfassungsschutz rücksichtslos für parteipolitische Interessen zu instrumentalisieren und den Union-Parteisoldaten Kramer für einen obsessiven, persönlichen Kreuzzug gegen die AfD. Von Storch erinnert an den Hintergrund von Haldenwangs Ernennung im November 2018 und behauptet, dass die Union den Inlandsgeheimdienst als Waffe gegen die AfD einsetzte, um die Umfragewerte der AfD zu drücken und die eigene Partei zu schützen. Sie kritisiert, dass Haldenwang öffentlich zugegeben hat, dass es auch seine Aufgabe ist, die Umfragewerte der AfD zu senken. Von Storch kritisiert auch Kramer, der nach Ansicht von Storch ein Sicherheitsrisiko darstellt, da er offenbar körperliche Gewalt gegen einen Mitarbeiter angedroht hat. Sie fordert, dass der Verfassungsschutz nicht gegen die Opposition eingesetzt werden darf, da dies ein Unterschied zwischen einer Demokratie und einer Diktatur sei. Schlussendlich wirft sie den anderen Parteien vor, eine Gefahr für die freiheitlich-demokratische Grundordnung darzustellen, wenn sie nicht zugeben, dass der Verfassungsschutz und Haldenwang und Kramer eine Gefahr für die freiheitlich-demokratische Grundordnung sind.",
+            "Zeit": 1.8292014598846436,
+            "KI": "Groq"
+        }
+    },
+    "Frage92": {
+        "Details": {
+            "Frage": "gebe mir Informationen über Beatrix von Storch",
+            "Ausgabe": "Beatrix von Storch ist eine Rednerin der rechtspopulistischen Partei AfD (Alternative für Deutschland). In ihrer Rede spricht sie über die Bedeutung der Staatsbürgerschaft und die Souveränität des deutschen Volkes. Sie kritisiert die Parteien SPD und Grüne und wirft ihnen vor, im Wahlkampf vorgeben, wichtige Änderungen durchsetzen zu wollen, dies aber in Wirklichkeit nicht zu tun.\n\nIm weiteren Verlauf ihrer Rede kritisiert Beatrix von Storch den Verfassungsschutz in seiner aktuellen Form. Sie wirft dem ehemaligen Verfassungsschutzchef Haldenwang und dem Präsidenten des Thüringer Verfassungsschutzes Kramer vor, die Demokratie durch parteipolitische Interessen und einen persönlichen Kreuzzug gegen die AfD zu gefährden. Sie beschreibt Haldenwangs Ernennung als Reaktion auf die sinkenden Umfragewerte der Union und die steigenden Werte der AfD. Haldenwang habe demzufolge den Auftrag erhalten, die AfD zu diffamieren, einzuschüchtern und ihre Wahlergebnisse zu drücken. Beatrix von Storch kritisiert auch Kramer, der 2015 an einer Kranzniederlegung für Gefallene der Roten Armee teilgenommen habe, kurz darauf Verfassungsschutzpräsident geworden sei und ein Regime der Angst und Einschüchterung errichtet habe. Sie bezeichnet die Debatte um Haldenwang und Kramer als Totalausfall der öffentlichen Kontrolle durch die Medien und warnt davor, dass der Inlandsgeheimdienst in keiner anderen westlichen Demokratie gegen die Opposition eingesetzt werden dürfe.\n\nBeatrix von Storch wurde 1968 in Limburg geboren und ist Juristin. Sie ist seit 2017 Mitglied des Deutschen Bundestages. Zuvor war sie von 2014 bis 2017 Mitglied des Europäischen Parlaments.",
+            "Zeit": 1.6754920482635498,
+            "KI": "Groq"
+        }
     }
 }
